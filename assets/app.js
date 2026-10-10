@@ -4,10 +4,12 @@
  * FORM_ENDPOINT: URL som formuläret skickas till (t.ex. Formspree:
  *   "https://formspree.io/f/xxxxxxxx"). Tom sträng = INGET skickas eller
  *   sparas; besökaren får bara en vänlig bekräftelse (förhandsvisningsläge).
- * CONTACT_EMAIL: visas i sidfoten när den är ifylld. Tom = dold.
+ * CONTACT_EMAIL: kontaktadress. Sidfoten (och integritetspolicyn) har en
+ *   statisk reservlänk i HTML till samma adress, så den syns även utan JS.
+ *   Byter ni adress: ändra här OCH i HTML (index.html, integritetspolicy.html).
  * ========================================================= */
 const FORM_ENDPOINT = "";
-const CONTACT_EMAIL = "";
+const CONTACT_EMAIL = "info@creacom.se";
 
 (function () {
   "use strict";
@@ -18,15 +20,15 @@ const CONTACT_EMAIL = "";
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  // Contact e-mail (only if configured)
+  // Contact e-mail: keeps every [data-contact-email] link in sync with CONTACT_EMAIL
+  // (the HTML already contains a static fallback with the same address).
   if (CONTACT_EMAIL) {
-    const wrap = document.getElementById("contact");
-    const link = document.getElementById("contact-link");
-    if (wrap && link) {
+    document.querySelectorAll("[data-contact-email]").forEach((link) => {
       link.href = "mailto:" + CONTACT_EMAIL;
       link.textContent = CONTACT_EMAIL;
-      wrap.hidden = false;
-    }
+    });
+    const wrap = document.getElementById("contact");
+    if (wrap) wrap.hidden = false;
   }
 
   const form = document.getElementById("waitlist-form");

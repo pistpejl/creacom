@@ -4,6 +4,7 @@ Statisk sida på svenska för att validera Creacom (en tjänst från Creacom Con
 
 ## Filer
 - `index.html` – hela sidan (hero, problem, kravtester, Butikskollen, flöde/vision, ansvar, preliminära priser, FAQ, väntelista)
+- `integritetspolicy.html` – integritetspolicy (svenska, GDPR) för väntelistan; länkas från formuläret, FAQ och sidfoten
 - `assets/styles.css`, `assets/app.js`
 - `assets/logo.svg`, `assets/logo-light.svg` – ordmärke (text konverterad till kurvor)
 - `favicon.svg`, `assets/favicon-32.png`, `assets/apple-touch-icon.png`, `assets/og.png` (1200×630)
@@ -15,12 +16,19 @@ Konfigureras högst upp i `assets/app.js`:
 
 ```js
 const FORM_ENDPOINT = "";   // t.ex. "https://formspree.io/f/xxxxxxxx"
-const CONTACT_EMAIL = "";   // visas i sidfoten när den är ifylld
+const CONTACT_EMAIL = "info@creacom.se";   // kontaktadress i sidfot/integritetspolicy
 ```
 
 - **Tom `FORM_ENDPOINT` (nu):** inget skickas eller sparas. Besökaren ser en bekräftelse med en liten notis om att formuläret inte är kopplat än.
 - **Ifylld:** POST med JSON (`email`, `built`, `interests` = kommaseparerad lista av valda intressen, t.ex. "Testpaket, Butikskollen", `source`) och `Accept: application/json` – fungerar med Formspree (och liknande tjänster som tar emot JSON). Fältet `_gotcha` är en bot-fälla. Knappar med `data-interest="testpaket|butikskollen|bevakning|publicering"` kryssar i motsvarande intresse i formuläret.
-- Tänk på GDPR: välj en tjänst med EU-lagring eller avtal, och lägg gärna till en kort integritetstext.
+- Kontaktadressen finns även som statisk reservlänk i HTML (sidfoten i båda sidorna samt i integritetspolicyn), så den syns utan JS. Byts adressen: ändra `CONTACT_EMAIL` **och** HTML-länkarna (`data-contact-email`).
+
+## Integritet / GDPR
+- `integritetspolicy.html` beskriver behandlingen för väntelistan: personuppgiftsansvarig Creacom Consulting AB (info@creacom.se), uppgifter (e-post, frivilligt "Vad har du byggt?", valda intressen, tidpunkt), syfte, rättslig grund samtycke (art. 6.1 a), lagring tills avregistrering men högst 24 månader, mottagare, GitHub Pages (IP-loggning, EU–US Data Privacy Framework), inga cookies, rättigheter och IMY.
+- Under knappen i formuläret står en informationsrad med länk till policyn. Att skicka formuläret = samtycke med tydlig information (ingen extra kryssruta).
+- Sidan använder inga cookies, ingen analys/spårning och inga externa typsnitt eller skript. **Lägger ni till något sådant måste policyn (och ev. samtyckesbanner) uppdateras.**
+- **TODO när formuläret kopplas in:** välj en formulärtjänst med lagring inom EU/EES (t.ex. Tally), teckna personuppgiftsbiträdesavtal och namnge tjänsten i policyn (se HTML-kommentaren `TODO` i `integritetspolicy.html`). Samma sak för e-posttjänsten som används för utskick.
+- Uppdatera "Senast uppdaterad" i policyn vid varje ändring. Radera anmälningar som är äldre än 24 månader om tjänsten inte lanserats/används.
 
 ## Köra lokalt
 ```

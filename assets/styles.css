@@ -343,3 +343,34 @@ p{margin:0}
   .note{font-size:.9rem}
 }
 section[id]{scroll-margin-top:72px}
+
+/* Waitlist consent line */
+.wl-form .consent a{color:#E4E6EA;text-underline-offset:3px}
+.wl-form .consent a:hover{color:var(--lime)}
+.footer-meta a{text-underline-offset:3px}
+.footer-meta a:hover{color:var(--ink)}
+.faq details p a{text-underline-offset:3px}
+
+/* Legal page (integritetspolicy.html) */
+.legal{padding:72px 0 112px}
+.legal-inner{max-width:760px}
+.legal h1{font-size:clamp(2.4rem,5vw,3.6rem)}
+.legal .updated{font-size:.92rem;color:var(--muted);margin-top:16px}
+.legal .section-lede{margin-top:24px}
+.legal-summary{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 28px}
+.legal-summary h2{font-size:1.15rem;letter-spacing:-.01em}
+.legal-summary ul{margin:12px 0 0;padding-left:1.2em;display:grid;gap:6px;color:var(--ink-2);font-size:.97rem}
+.legal-body h2{font-size:1.5rem;letter-spacing:-.015em;margin:48px 0 12px;padding-top:28px;border-top:1px solid var(--line)}
+.legal-body p,.legal-body li{color:var(--ink-2)}
+.legal-body p+p{margin-top:12px}
+.legal-body ul{margin:12px 0 0;padding-left:1.2em;display:grid;gap:8px}
+.legal-body li::marker{color:var(--muted)}
+.legal-body a,.legal-summary a{text-underline-offset:3px}
+.legal-body strong{color:var(--ink)}
+.legal-back{margin-top:56px}
+@media (max-width:600px){
+  .legal{padding:40px 0 80px}
+  .legal-summary{padding:20px}
+  .legal-body h2{font-size:1.3rem;margin-top:36px;padding-top:24px}
+}
+.legal-body ul+p{margin-top:14px}
