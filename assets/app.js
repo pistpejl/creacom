@@ -33,13 +33,16 @@ const CONTACT_EMAIL = "";
   if (!form) return;
   const email = form.querySelector("#email");
   const emailErr = form.querySelector("#email-err");
-  const prebook = form.querySelector("#prebook");
+  const interestBoxes = Array.from(form.querySelectorAll('input[name="interests"]'));
   const status = document.getElementById("form-status");
   const submit = form.querySelector('button[type="submit"]');
 
-  // "Förboka Founder" buttons pre-tick the checkbox
-  document.querySelectorAll("[data-prebook]").forEach((el) =>
-    el.addEventListener("click", () => { if (prebook) prebook.checked = true; })
+  // Buttons with data-interest="testpaket|butikskollen|bevakning|publicering" pre-tick that interest
+  document.querySelectorAll("[data-interest]").forEach((el) =>
+    el.addEventListener("click", () => {
+      const box = interestBoxes.find((b) => b.dataset.key === el.dataset.interest);
+      if (box) box.checked = true;
+    })
   );
 
   const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
@@ -49,6 +52,7 @@ const CONTACT_EMAIL = "";
   };
   email.addEventListener("input", () => { if (email.getAttribute("aria-invalid") === "true" && validEmail(email.value)) setError(false); });
 
+  const esc = (t) => t.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const show = (html, isError) => {
     status.innerHTML = html;
     status.classList.toggle("is-error", !!isError);
@@ -61,11 +65,11 @@ const CONTACT_EMAIL = "";
     setError(false);
     if (form._gotcha && form._gotcha.value) return; // bot trap
 
-    const pre = prebook && prebook.checked;
+    const interests = interestBoxes.filter((b) => b.checked).map((b) => b.value);
     const thanks =
       "<strong>Tack! Du står på väntelistan.</strong>" +
-      (pre ? "Vi har noterat att du vill förboka Founder – inget betalas nu. " : "") +
-      "Vi hör av oss när betan öppnar.";
+      (interests.length ? "Vi har noterat ditt intresse för: " + esc(interests.join(", ")) + ". " : "") +
+      "Vi hör av oss när du kan testa din app.";
 
     if (!FORM_ENDPOINT) {
       // Preview mode: nothing is sent or stored.
@@ -82,7 +86,7 @@ const CONTACT_EMAIL = "";
       const data = {
         email: email.value.trim(),
         built: form.built.value.trim(),
-        prebook_founder: pre ? "ja" : "nej",
+        interests: interests.join(", "),
         source: "creacom-landing",
       };
       const res = await fetch(FORM_ENDPOINT, {
