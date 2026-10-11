@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "cipher": "AES-256-GCM",
+  "kdf": {
+    "name": "PBKDF2",
+    "hash": "SHA-256",
+    "iterations": 600000
+  },
+  "files": [
+    {
+      "id": "affarsplan",
+      "file": "files/affarsplan-v3.pdf.enc",
+      "filename": "creacom-affarsplan-v3.pdf",
+      "name": "Affärsplan v3 (PDF)",
+      "mime": "application/pdf",
+      "size": 849509,
+      "salt": "EDCIPYwmr9GgHf01tzrhuw==",
+      "iv": "/0IUMtHNMLCkW/B7"
+    },
+    {
+      "id": "business-case",
+      "file": "files/business-case.xlsx.enc",
+      "filename": "creacom-business-case.xlsx",
+      "name": "Business case (Excel)",
+      "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "size": 42914,
+      "salt": "4+UWq9UlGQOXwOpI7BFRTg==",
+      "iv": "IU4NPZ4spu8iXBEa"
+    }
+  ]
+}

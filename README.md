@@ -51,3 +51,18 @@ och öppna http://127.0.0.1:8765/ (engelska: http://127.0.0.1:8765/en/)
 - `og:image`/`twitter:image`/`og:url`, `canonical` och `hreflang` är absoluta URL:er till GitHub Pages – byt domän om ni flyttar till egen domän.
 - Vid egen domän på GitHub Pages: lägg till en `CNAME`-fil.
 - Priserna är preliminära (exkl. moms) och märkta så på sidan.
+
+## Lösenordsskyddade dokument (`docs/`)
+- `docs/index.html` ("Dokument") är en lösenordsskyddad sida för interna dokument (affärsplan och business case). Den har `noindex, nofollow` och länkas diskret från sidfoten ("Dokument" / "Documents").
+- **Repot är publikt – därför ligger filerna bara krypterade i repot.** `docs/files/*.enc` är krypterade med AES-256-GCM; nyckeln härleds ur lösenordet med PBKDF2-HMAC-SHA256 (600 000 iterationer), med eget slumpmässigt 16-byte salt och 12-byte IV per fil. `docs/manifest.json` innehåller bara filnamn, visningsnamn, MIME-typ, storlek, salt, IV och iterationer – inga hemligheter.
+- Dekrypteringen sker i webbläsaren med Web Crypto (`docs/docs.js`). Lösenordet skickas inte någonstans och sparas inte (inga cookies eller localStorage). Fel lösenord ger "Fel lösenord" (GCM-taggen stämmer inte).
+- **Kryptera om / byta filer eller lösenord** (klartextfilerna ska ligga utanför repot):
+  ```
+  pip install cryptography
+  export CREACOM_DOCS_PASSWORD='…'   # skriv aldrig lösenordet i en fil i repot
+  python3 tools/encrypt_docs.py --affarsplan /sökväg/creacom-affarsplan-v3.pdf --business-case /sökväg/creacom-business-case.xlsx
+  ```
+  Skriptet skriver om `docs/files/*.enc` och `docs/manifest.json` (nytt salt och ny IV varje gång). Checka in och pusha.
+- Byte av lösenord: kör skriptet med det nya lösenordet. Observera att gamla krypterade versioner finns kvar i git-historiken och fortfarande kan låsas upp med det gamla lösenordet.
+- `.gitignore` stoppar PDF/Excel-filer (och allt utom `.enc` i `docs/files/`) från att checkas in. Använd aldrig `git add -f` på klartextfiler.
+- Säkerheten vilar helt på lösenordets styrka: vem som helst kan ladda ner `.enc`-filerna och försöka gissa offline. Använd ett långt, slumpmässigt lösenord.

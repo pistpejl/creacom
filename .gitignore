@@ -1,1 +1,14 @@
 /screenshots/
+
+# Lösenordsskyddade dokument: endast krypterade .enc-filer får checkas in i docs/.
+# Klartextfiler (PDF, Excel m.m.) får aldrig hamna i repot.
+/docs/**/*.pdf
+/docs/**/*.xlsx
+/docs/**/*.xls
+/docs/**/*.docx
+/docs/**/*.csv
+/docs/**/*.zip
+/docs/files/*
+!/docs/files/*.enc
+*.pdf
+*.xlsx
