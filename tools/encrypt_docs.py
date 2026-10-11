@@ -5,7 +5,11 @@ Användning:
     export CREACOM_DOCS_PASSWORD='...'   # aldrig i repot
     python3 tools/encrypt_docs.py \
         --affarsplan /sökväg/creacom-affarsplan-v3.pdf \
-        --business-case /sökväg/creacom-business-case.xlsx
+        --business-case /sökväg/creacom-business-case.xlsx \
+        --demovideo /sökväg/creacom-testdemo.mp4
+
+Alla argument är valfria: filer som inte anges behåller sin befintliga
+krypterade fil och sin post i manifest.json (så man kan kryptera om en enda fil).
 
 Varje fil krypteras med AES-256-GCM. Nyckeln härleds ur lösenordet med
 PBKDF2-HMAC-SHA256 (600 000 iterationer) och ett slumpmässigt 16-byte salt.
@@ -38,6 +42,8 @@ DOCUMENTS = [
     ("business-case", "business-case.xlsx.enc", "creacom-business-case.xlsx",
      "Business case (Excel)",
      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+    ("demovideo", "creacom-testdemo.mp4.enc", "creacom-testdemo.mp4",
+     "Demovideo: så går ett test till (MP4)", "video/mp4"),
 ]
 
 
@@ -48,8 +54,9 @@ def derive_key(password: bytes, salt: bytes) -> bytes:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--affarsplan", required=True, type=Path, help="Affärsplanen (PDF) i klartext, utanför repot")
-    ap.add_argument("--business-case", required=True, type=Path, help="Business case (XLSX) i klartext, utanför repot")
+    ap.add_argument("--affarsplan", type=Path, help="Affärsplanen (PDF) i klartext, utanför repot")
+    ap.add_argument("--business-case", type=Path, help="Business case (XLSX) i klartext, utanför repot")
+    ap.add_argument("--demovideo", type=Path, help="Demovideon (MP4) i klartext, utanför repot")
     args = ap.parse_args()
 
     password = os.environ.get("CREACOM_DOCS_PASSWORD")
@@ -58,12 +65,24 @@ def main() -> int:
         return 1
     pw = password.encode("utf-8")
 
-    sources = {"affarsplan": args.affarsplan, "business-case": args.business_case}
+    sources = {"affarsplan": args.affarsplan, "business-case": args.business_case,
+               "demovideo": args.demovideo}
+    if not any(sources.values()):
+        print("Fel: ange minst en fil att kryptera.", file=sys.stderr)
+        return 1
     (DOCS / "files").mkdir(parents=True, exist_ok=True)
+
+    old = {}
+    if (DOCS / "manifest.json").exists():
+        old = {e["id"]: e for e in json.loads((DOCS / "manifest.json").read_text(encoding="utf-8"))["files"]}
 
     entries = []
     for doc_id, enc_name, filename, display, mime in DOCUMENTS:
         src = sources[doc_id]
+        if src is None:
+            if doc_id in old:
+                entries.append(old[doc_id])  # behåll befintlig krypterad fil oförändrad
+            continue
         data = src.read_bytes()
         salt = os.urandom(16)
         iv = os.urandom(12)

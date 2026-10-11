@@ -11,6 +11,11 @@
   var panel = document.getElementById("docs-unlocked");
   var list = document.getElementById("docs-list");
   var lockBtn = document.getElementById("lock-btn");
+  var demoSlot = document.getElementById("docs-demo-slot");
+  var DEMO_TEXT = [
+    "Här är demon av hur ett test i Creacom går till. Grundaren skriver fem krav för en fikabokningsapp, och varje krav testas i en riktig webbläsare medan det spelas in. Krav 4, att man kan radera sitt konto, blir rött. Appen säger ”Kontot är raderat”, men testet loggar in igen och kommer in, så kontot fanns kvar. Det är precis den sortens fel som en grundare annars aldrig märker, och som Apple avvisar appar för.",
+    "Resultaten är äkta, men appen och felet är gjorda för demon, och körningsnumret ”#128” är påhittat."
+  ];
   var urls = [];
 
   function setMsg(text, isError) {
@@ -42,6 +47,7 @@
     urls.forEach(function (u) { URL.revokeObjectURL(u); });
     urls = [];
     list.textContent = "";
+    demoSlot.textContent = "";
     panel.hidden = true;
     form.hidden = false;
     input.value = "";
@@ -49,11 +55,50 @@
     input.focus();
   }
 
+  function renderDemo(d, url) {
+    var sec = document.createElement("section");
+    sec.className = "docs-demo";
+    sec.setAttribute("aria-labelledby", "docs-demo-h");
+    var h = document.createElement("h3");
+    h.id = "docs-demo-h";
+    h.textContent = "Demo: så går ett test till";
+    sec.appendChild(h);
+    var v = document.createElement("video");
+    v.controls = true;
+    v.playsInline = true;
+    v.setAttribute("playsinline", "");
+    v.preload = "metadata";
+    v.id = "docs-demo-video";
+    var src = document.createElement("source");
+    src.src = url;
+    src.type = "video/mp4";
+    v.appendChild(src);
+    sec.appendChild(v);
+    DEMO_TEXT.forEach(function (t) {
+      var p = document.createElement("p");
+      p.textContent = t;
+      sec.appendChild(p);
+    });
+    var row = document.createElement("p");
+    var dl = document.createElement("a");
+    dl.className = "btn btn-sm btn-ink";
+    dl.href = url;
+    dl.download = d.filename;
+    dl.textContent = "Ladda ner videon";
+    dl.dataset.docId = d.id;
+    row.appendChild(dl);
+    sec.appendChild(row);
+    demoSlot.textContent = "";
+    demoSlot.appendChild(sec);
+  }
+
   function render(docs) {
     list.textContent = "";
+    demoSlot.textContent = "";
     docs.forEach(function (d) {
       var url = URL.createObjectURL(d.blob);
       urls.push(url);
+      if (d.mime === "video/mp4") { renderDemo(d, url); return; }
       var li = document.createElement("li");
       var name = document.createElement("span");
       name.className = "doc-name";

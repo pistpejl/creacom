@@ -26,6 +26,16 @@
       "size": 42914,
       "salt": "4+UWq9UlGQOXwOpI7BFRTg==",
       "iv": "IU4NPZ4spu8iXBEa"
+    },
+    {
+      "id": "demovideo",
+      "file": "files/creacom-testdemo.mp4.enc",
+      "filename": "creacom-testdemo.mp4",
+      "name": "Demovideo: så går ett test till (MP4)",
+      "mime": "video/mp4",
+      "size": 2291527,
+      "salt": "Jt4/JQibGh1e0LLYk8NmxA==",
+      "iv": "jW3x+hQOZu0rVB4q"
     }
   ]
 }

@@ -30,6 +30,12 @@
 .docs-list .doc-name{font-weight:600;margin-right:auto}
 .docs-list .doc-size{color:var(--muted);font-size:.88rem;width:100%}
 .docs-fine{color:var(--muted);font-size:.88rem}
+.docs-card.docs-wide{max-width:760px}
+.docs-demo{display:grid;gap:14px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.docs-demo h3{font-size:1.15rem;margin:0}
+.docs-demo p{color:var(--ink-2);line-height:1.6;margin:0}
+.docs-demo video{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:16/9;background:#0F1115;border-radius:var(--radius-sm);border:1px solid var(--line)}
+.docs-demo .docs-fine{margin:0}
 </style>
 </head>
 <body>
@@ -59,6 +65,7 @@
       <p class="kicker">Internt</p>
       <h1 id="docs-h">Dokument</h1>
       <p class="section-lede">Den här sidan är lösenordsskyddad. Ange lösenordet för att låsa upp och ladda ner dokumenten.</p>
+      <p class="docs-fine" style="margin-top:10px">Innehåll: affärsplan, business case och demovideo.</p>
 
       <form class="docs-card" id="unlock-form" autocomplete="off" novalidate>
         <div class="field">
@@ -72,8 +79,9 @@
         <p class="docs-fine">Filerna är krypterade (AES-256) och dekrypteras bara här i din webbläsare. Lösenordet skickas inte någonstans och sparas inte.</p>
       </form>
 
-      <section class="docs-card" id="docs-unlocked" hidden aria-labelledby="docs-list-h">
+      <section class="docs-card docs-wide" id="docs-unlocked" hidden aria-labelledby="docs-list-h">
         <h2 id="docs-list-h" style="font-size:1.25rem">Upplåst</h2>
+        <div id="docs-demo-slot"></div>
         <ul class="docs-list" id="docs-list"></ul>
         <p><button type="button" class="btn btn-sm btn-ghost" id="lock-btn">Lås igen</button></p>
       </section>
